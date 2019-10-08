@@ -1,0 +1,64 @@
+Sending build context to Docker daemon  2.574GB
+Step 1/19 : FROM oraclelinux:7.6
+ ---> 5f993b1aafe5
+Step 2/19 : MAINTAINER peddi.groups@gmail.com
+ ---> Using cache
+ ---> 0bed8ded4ebd
+Step 3/19 : USER root
+ ---> Using cache
+ ---> c06f83d3ae6a
+Step 4/19 : RUN groupadd -g 501 oinstall   && groupadd -g 502 dba   && groupadd -g 503 oper   && useradd -m -g oinstall -G oinstall,dba,oper -u 501 oracle   && echo 'oracle:Kiwi123' | chpasswd
+ ---> Using cache
+ ---> ab6e6f292284
+Step 5/19 : RUN rpm --rebuilddb  && yum -y install file openssl lsof sudo sysstat tree wget which   && yum clean all  && rm -rf /var/cache/yum/*
+ ---> Using cache
+ ---> 833bf20e29a7
+Step 6/19 : RUN echo "oracle ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers   && echo "Defaults !requiretty"  >> /etc/sudoers   && mkdir -p /opt/oracle   && mkdir -p /install   && mkdir -p /home/oracle/bin   && chown -R oracle:oinstall /opt/oracle   && chown -R oracle:oinstall /home/oracle/bin
+ ---> Using cache
+ ---> 9770c8c73414
+Step 7/19 : COPY software/oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm /install
+ ---> Using cache
+ ---> 496fb516b12b
+Step 8/19 : COPY software/oracle-database-xe-18c-1.0-1.x86_64.rpm /install/
+ ---> Using cache
+ ---> 7cf7623e3667
+Step 9/19 : ENV ORACLE_DOCKER_INSTALL=true
+ ---> Using cache
+ ---> 98edfa8f941e
+Step 10/19 : RUN cd /install  && yum -y localinstall oracle-database-*18c*   && yum clean all  && rm -rf /var/cache/yum/* && rm -rf /install/oracle*.rpm
+ ---> Using cache
+ ---> 05c554a0aef2
+Step 11/19 : EXPOSE 1521 5500
+ ---> Using cache
+ ---> 66665d942418
+Step 12/19 : RUN sed -i -e "s/^.*memlock.*//g" /etc/security/limits.d/oracle-database-preinstall-18c.conf  && printf Kiwi123\\nKiwi123\\n  | /etc/init.d/oracle-xe-18c configure
+ ---> Using cache
+ ---> fb3eda1a1342
+Step 13/19 : COPY scripts/manage-xe.sh /home/oracle/bin
+ ---> 6ebeeeabfbb2
+Step 14/19 : RUN chown oracle:oinstall /home/oracle/bin/manage-xe.sh   && chmod 775 /home/oracle/bin/manage-xe.sh
+ ---> Running in 9c98ca260931
+Removing intermediate container 9c98ca260931
+ ---> 03eeb54cabfa
+Step 15/19 : USER oracle
+ ---> Running in 89d3b80ef6ba
+Removing intermediate container 89d3b80ef6ba
+ ---> 0a12412ae484
+Step 16/19 : WORKDIR /home/oracle
+ ---> Running in e58fdbecf923
+Removing intermediate container e58fdbecf923
+ ---> c3b077faccad
+Step 17/19 : ENV ORACLE_DOCKER_INSTALL=true     ORACLE_BASE=/opt/oracle     ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE     PATH=/home/oracle/bin:/opt/oracle/product/18c/dbhomeXE/bin:$PATH     NLS_DATE_FORMAT="dd/mm/yyyy:hh24:mi:ss"     ORACLE_SID=XE
+ ---> Running in 86896f4a1b82
+Removing intermediate container 86896f4a1b82
+ ---> 51e51757ea5b
+Step 18/19 : RUN history -c
+ ---> Running in 101604379c4c
+Removing intermediate container 101604379c4c
+ ---> 70f5e5d9f8af
+Step 19/19 : CMD ["/home/oracle/bin/manage-xe.sh", "-o", "start"]
+ ---> Running in bd628b2bb78a
+Removing intermediate container bd628b2bb78a
+ ---> a226619755b8
+Successfully built a226619755b8
+Successfully tagged oracle-db:18cXE
