@@ -1,7 +1,7 @@
 
 Step 1:
 ------
-Down load the oracle database preinstall and install package files
+Download the oracle database preinstall and install package files
 oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm
 oracle-database-xe-18c-1.0-1.x86_64.rpm 
 
@@ -14,13 +14,13 @@ https://www.oracle.com/database/technologies/xe-downloads.htmli
 
 Step 2:
 ------- 
-Copy the downloaded oracle databaase files into the "software" directory
+Copy the downloaded oracle database install package files into the "software" directory under root directory of docker image files
 
 
 Step 3: 
 -------
-get into the root directory where docker files available 
-Build the docker image for oracle XE using the following command run the following command
+Get into the root directory where docker files are available 
+Build the docker image for oracle XE using the following command 
  
  $ sh docker_image_build.sh > docker_image_build.log
 
@@ -34,7 +34,7 @@ oracle-db           18cXE               a226619755b8        11 days ago         
 
 Step 4: 
 -------
-Create the docker container for oracle XE from the docker image creatd above using the script createOracleXEDockerContainer.sh
+Create the docker container for oracle XE from the docker image creatd in step 3 using the script createOracleXEDockerContainer.sh
 
  $ sh createOracleXEDockerContainer.sh
 
@@ -54,7 +54,8 @@ Step 5:
 Connect to the docker container 
 $ docker exec -it  <container>  sh
 
-Connect to the Database
+
+Now connect to the Database inside the container
 
 $ sqlplus /nolog
 SQL*Plus: Release 18.0.0.0.0 - Production on Tue Oct 8 15:19:42 2019
@@ -71,7 +72,7 @@ Connected.
 Step 6:
 -------
 
-Connect to the database using SQL Developer
+Connect to the database using SQL Developer outside the container
 
 system/Kiwi123@localhost:1521/xe as sysdba
 
